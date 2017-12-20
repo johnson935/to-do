@@ -10,11 +10,16 @@ import UIKit
 class ToDoListViewController: UITableViewController {
 
     var listArray = ["Wake up","Brush teeth","Study"]
-
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        //optional binding for saved defaults after adding item and saves the data even after the app terminates, we set item as string
+        if let item = defaults.array(forKey: "toDoListArray") as? [String] {
+           listArray = item
+        }
+        
     }
 
     //Mark - Table view datasource methods
@@ -55,6 +60,7 @@ class ToDoListViewController: UITableViewController {
             
             if  textField.text != "" {
                  self.listArray.append(textField.text!)
+                self.defaults.set(self.listArray, forKey: "toDoListArray")
             }else {
                 let alert2 = UIAlertController(title: "No item entered", message: "", preferredStyle: .alert)
                 

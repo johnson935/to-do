@@ -5,22 +5,27 @@
 //  Created by Johuson on 20/12/2017.
 //
 //change properties of the navigation bar by selecting the main navigation view controller and change the titles in each individual view controller no need to do it in the main navigation controller
+// set singleton in a class using static let and the value of the singleton will stay the same across different objects and classes
 import UIKit
 
 class ToDoListViewController: UITableViewController {
-
-    var listArray = ["Wake up","Brush teeth","Study"]
+// array of item objects
+    var listArray = [Item]()
     let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let newItem = Item()
+        newItem.title = "Wake up"
+        listArray.append(newItem)
         // Do any additional setup after loading the view, typically from a nib.
         //optional binding for saved defaults after adding item and saves the data even after the app terminates, we set item as string
-        if let item = defaults.array(forKey: "toDoListArray") as? [String] {
-           listArray = item
+      //  if let item = defaults.array(forKey: "toDoListArray") as? [String] {
+       //    listArray = item
         }
         
-    }
+  //  }
 
     //Mark - Table view datasource methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -29,23 +34,33 @@ class ToDoListViewController: UITableViewController {
     }
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
-    cell.textLabel?.text = listArray[indexPath.row]
+        let item = listArray[indexPath.row]
+        
+        cell.textLabel?.text = item.title
         print(indexPath.row)
     //indexpath is a 2 dimensional array so you have to specify its row property.
+     // Ternary operator ==>
+        //value = condition? valueiftrue : valueiffalse
         
-        return cell
+        cell.accessoryType = item.done ? .checkmark : .none
+        //The above code represents the code below
+        //if item.done == true {
+          //  cell.accessoryType = .checkmark
+       // } else {
+         //  cell.accessoryType = .none
+        //}
+       // return cell
     }
  
     //Mark - Tableview delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // when the cell is tapped the cell flashes grey instead of staying grey
-        tableView.deselectRow(at: indexPath, animated: true)
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark{
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        }
         
+        //chages the value of the booleen so the new done is not equal to the old one
+        listArray[indexPath.row].done = !listArray[indexPath.row].done
+        tableView.deselectRow(at: indexPath, animated: true)
+  
+        tableView.reloadData()
         print(indexPath)
     }
     
@@ -59,8 +74,10 @@ class ToDoListViewController: UITableViewController {
             (action) in
             
             if  textField.text != "" {
-                 self.listArray.append(textField.text!)
-                self.defaults.set(self.listArray, forKey: "toDoListArray")
+                let anotherItem = Item()
+                anotherItem.title = textField.text!
+                 self.listArray.append(anotherItem)
+               // self.defaults.set(self.listArray, forKey: "toDoListArray")
             }else {
                 let alert2 = UIAlertController(title: "No item entered", message: "", preferredStyle: .alert)
                 

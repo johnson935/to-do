@@ -21,8 +21,8 @@ class ToDoListViewController: UITableViewController {
         listArray.append(newItem)
         // Do any additional setup after loading the view, typically from a nib.
         //optional binding for saved defaults after adding item and saves the data even after the app terminates, we set item as string
-      //  if let item = defaults.array(forKey: "toDoListArray") as? [String] {
-       //    listArray = item
+       if let item = defaults.array(forKey: "toDoListArray") as? [Item] {
+           listArray = item
         }
         
   //  }
@@ -77,7 +77,7 @@ class ToDoListViewController: UITableViewController {
                 let anotherItem = Item()
                 anotherItem.title = textField.text!
                  self.listArray.append(anotherItem)
-               // self.defaults.set(self.listArray, forKey: "toDoListArray")
+                self.defaults.set(self.listArray, forKey: "toDoListArray")
             }else {
                 let alert2 = UIAlertController(title: "No item entered", message: "", preferredStyle: .alert)
                 
